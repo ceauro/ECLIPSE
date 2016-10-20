@@ -7,6 +7,8 @@ import com.db.ds.DataSource;
 import com.db.dto.ConexionDto;
 import com.db.util.ConexionUtil;
 
+
+
 public class CRUD {
 
 	private static String INSERT = "INSERT INTO tbl_empleado(cedula, nombres, apellidos, telefono) VALUES(?,?,?,?)";
