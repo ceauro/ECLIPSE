@@ -3,18 +3,16 @@ package com.test;
 import static com.db.util.Constantes.TBL_EMPLEADO;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.db.dao.CrudDao;
 import com.db.dao.EmpleadoDao;
 import com.db.dto.EmpleadoDto;
+import com.db.enums.Logico;
+import com.db.enums.Tipo;
+import com.db.util.Condicion;
 import com.db.util.ConexionUtil;
-import com.db.util.Field;
-import com.db.util.Logico;
 import com.db.util.Query;
-import com.db.util.Tipo;
 
 
 
@@ -34,9 +32,9 @@ public class CRUD {
 	public static void consultarEmpleados() throws Exception {
 		CrudDao<EmpleadoDto> consultar = new EmpleadoDao();
 		
-		List<Field> campos = new ArrayList<Field>();
-		campos.add(new Field(Tipo.VARCHAR, "nombres", "Carlos", Logico.AND));
-		campos.add(new Field(Tipo.VARCHAR, "cedula","98712735"));
+		List<Condicion> campos = new ArrayList<Condicion>();
+		campos.add(new Condicion(Tipo.VARCHAR,"nombres", "Carlos", Logico.AND));
+		campos.add(new Condicion(Tipo.VARCHAR,"cedula","98712735"));
 		
 		Query query = new Query(TBL_EMPLEADO, campos);
 		

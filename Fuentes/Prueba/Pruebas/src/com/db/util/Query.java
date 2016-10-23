@@ -8,14 +8,12 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class Query {
 	
 	private String[] camposSelect;
 	private String tabla;
-	private List<Field> condiciones;
+	private List<Condicion> condiciones;
 	
 	public Query(String tabla){
 		this.tabla = tabla;
@@ -26,12 +24,12 @@ public class Query {
 		this.tabla = tabla;
 	}
 	
-	public Query(String tabla, List<Field> condiciones){
+	public Query(String tabla, List<Condicion> condiciones){
 		this.tabla = tabla;
 		this.condiciones = condiciones;
 	}
 	
-	public Query(String[] camposSelect, String tabla, List<Field> condiciones){
+	public Query(String[] camposSelect, String tabla, List<Condicion> condiciones){
 		this.camposSelect = camposSelect;
 		this.tabla = tabla;
 		this.condiciones = condiciones;
@@ -49,15 +47,15 @@ public class Query {
 	public void setTabla(String tabla) {
 		this.tabla = tabla;
 	}
-	public List<Field> getCondiciones() {
+	public List<Condicion> getCondiciones() {
 		return condiciones;
 	}
-	public void setCondiciones(List<Field> condiciones) {
+	public void setCondiciones(List<Condicion> condiciones) {
 		this.condiciones = condiciones;
 	}
 	
 	public String getQuery(){
-		List<Field> claves = null;
+		List<Condicion> claves = null;
 		StringBuilder sql = new StringBuilder();
 		
 		if(getCamposSelect() == null){
@@ -79,7 +77,7 @@ public class Query {
 			claves = getCondiciones();
 			sql.append(WHERE);
 			
-			for(Field clave: claves){;
+			for(Condicion clave: claves){;
 				sql.append(clave.getCampo());
 				sql.append(" = ? ");
 				
@@ -99,8 +97,8 @@ public class Query {
 	public void prepararQuery(PreparedStatement ps) throws SQLException{
 		if(getCondiciones() != null){
 			int cont = 1;
-			List<Field> claves = getCondiciones();
-			for(Field clave: claves){			
+			List<Condicion> claves = getCondiciones();
+			for(Condicion clave: claves){			
 				switch(clave.getTipo()){
 					case NUMBER:
 						ps.setInt(cont++, (int)clave.getValor());

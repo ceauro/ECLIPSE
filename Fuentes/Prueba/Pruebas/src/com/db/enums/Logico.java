@@ -1,4 +1,4 @@
-package com.db.util;
+package com.db.enums;
 
 public enum Logico {
 	AND ("AND"), 

@@ -1,19 +1,22 @@
 package com.db.util;
 
-public class Field {
+import com.db.enums.Logico;
+import com.db.enums.Tipo;
+
+public class Condicion {
 	
 	private Tipo tipo;
 	private String campo;
 	private Object valor;
 	private Logico operadroLogico;
 	
-	public Field(Tipo tipo, String campo, String valor){
+	public Condicion(Tipo tipo, String campo, String valor){
 		this.tipo = tipo;
 		this.campo = campo;
 		this.valor = valor;
 	}
 	
-	public Field(Tipo tipo, String campo, String valor, Logico operadroLogico){
+	public Condicion(Tipo tipo, String campo, String valor, Logico operadroLogico){
 		this.tipo = tipo;
 		this.campo = campo;
 		this.valor = valor;
