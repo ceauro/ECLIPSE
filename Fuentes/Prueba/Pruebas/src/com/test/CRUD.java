@@ -14,8 +14,6 @@ import com.db.util.Condicion;
 import com.db.util.ConexionUtil;
 import com.db.util.Query;
 
-
-
 public class CRUD {
 
 	public static void guardarEmpleado() throws Exception {
