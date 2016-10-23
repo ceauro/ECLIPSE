@@ -1,25 +1,60 @@
 package com.db.util;
 
+import static com.db.util.Constantes.DRIVER;
+import static com.db.util.Constantes.CONEXION;
+import static com.db.util.Constantes.USUARIO;
+import static com.db.util.Constantes.CLAVE;
+import static com.db.util.Constantes.DATA_SOURCE;
+
 import com.db.dto.ConexionDto;
+import com.db.dto.EmpleadoDto;
+import com.db.vo.ConexionVo;
+import com.db.vo.EmpleadoVo;
+import com.google.gson.Gson;
 
 public class ConexionUtil {
 
-	private static final String DRIVER = Config.getPropiedad(Config.DRIVER);
-	private static final String CONEXION = Config.getPropiedad(Config.CONEXION);
-	private static final String USUARIO = Config.getPropiedad(Config.USUARIO);
-	private static final String CLAVE = Config.getPropiedad(Config.CLAVE);
-	private static final String DATA_SOURCE = Config.getPropiedad(Config.DATA_SOURCE);
-	
-	public static ConexionDto getConexionDto(){
-		
-		ConexionDto dto = new ConexionDto();
-		
-		dto.setDriver(DRIVER);
-		dto.setConexion(CONEXION);
-		dto.setUsuario(USUARIO);
-		dto.setClave(CLAVE);
-		dto.setDataSource(DATA_SOURCE);
-		
-		return dto;
+	public static ConexionDto getConexionDto() {
+
+		ConexionVo vo = new ConexionVo();
+
+		vo.setDriver(DRIVER);
+		vo.setConexion(CONEXION);
+		vo.setUsuario(USUARIO);
+		vo.setClave(CLAVE);
+		vo.setDataSource(DATA_SOURCE);
+
+		return new ConexionDto(vo);
+	}
+
+	public static EmpleadoDto getEmpleadoDto(int id, String cedula, String nombres, String apellidos, String telefono) {
+
+		EmpleadoVo vo = new EmpleadoVo();
+
+		vo.setId(id);
+		vo.setCedula(cedula);
+		vo.setNombres(nombres);
+		vo.setApellidos(apellidos);
+		vo.setTelefono(telefono);
+
+		return new EmpleadoDto(vo);
+	}
+
+	public static EmpleadoDto getEmpleadoDto(String cedula, String nombres, String apellidos, String telefono) {
+
+		EmpleadoVo vo = new EmpleadoVo();
+
+		vo.setCedula(cedula);
+		vo.setNombres(nombres);
+		vo.setApellidos(apellidos);
+		vo.setTelefono(telefono);
+
+		return new EmpleadoDto(vo);
+	}
+
+	public static EmpleadoDto getEmpleadoDto(String Json) {
+		Gson json = new Gson();
+		EmpleadoVo vo = json.fromJson(Json, EmpleadoVo.class);
+		return new EmpleadoDto(vo);
 	}
 }

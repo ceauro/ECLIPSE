@@ -1,42 +1,33 @@
 package com.db.dto;
 
+import com.db.vo.ConexionVo;
+
 public class ConexionDto {
 	
-	private String driver;
-	private String conexion;
-	private String usuario;
-	private String clave;
-	private String dataSource;
-	
-	public String getDriver() {
-		return driver;
-	}
-	public void setDriver(String driver) {
-		this.driver = driver;
-	}
-	public String getConexion() {
-		return conexion;
-	}
-	public void setConexion(String conexion) {
+	private ConexionVo conexion;
+
+	public ConexionDto(ConexionVo conexion){
 		this.conexion = conexion;
 	}
+	
+	public String getDriver() {
+		return conexion.getDriver();
+	}
+
+	public String getConexion() {
+		return conexion.getConexion();
+	}
+
 	public String getUsuario() {
-		return usuario;
+		return conexion.getUsuario();
 	}
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
-	}
+
 	public String getClave() {
-		return clave;
+		return conexion.getClave();
 	}
-	public void setClave(String clave) {
-		this.clave = clave;
-	}
+
 	public String getDataSource() {
-		return dataSource;
-	}
-	public void setDataSource(String dataSource) {
-		this.dataSource = dataSource;
+		return conexion.getDataSource();
 	}
 
 }

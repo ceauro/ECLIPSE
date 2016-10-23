@@ -1,4 +1,4 @@
-package com.rs.dto;
+package com.rs.vo;
 
 public class PruebaJson {
 	
