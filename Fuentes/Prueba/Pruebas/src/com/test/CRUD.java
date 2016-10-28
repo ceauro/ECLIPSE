@@ -13,6 +13,10 @@ import com.db.enums.Tipo;
 import com.db.util.Condicion;
 import com.db.util.ConexionUtil;
 import com.db.util.Query;
+import com.jpa.dao.CrudJpa;
+import com.jpa.dao.EmpleadoJpaDao;
+
+import model.TblEmpleado;
 
 public class CRUD {
 
@@ -54,13 +58,29 @@ public class CRUD {
 		
 	}
 	
+	public static void crearEmpleadoJPA() throws Exception {
+		TblEmpleado emp = new TblEmpleado();
+		emp.setApellidos("Rodriguez");
+		emp.setCedula("70123816");
+		emp.setNombres("Gustavo");
+		emp.setTelefono("4811571");
+		
+		CrudJpa<TblEmpleado> crud = new EmpleadoJpaDao(emp);
+		if(crud.insertar()){
+			System.out.println("Inserto");
+		} else {
+			System.out.println("No inserto");
+		}
+	}
+	
 	public static void main(String[] args){
 		try {
 //			CRUD.actualizarEmpleado();
 			//CRUD.consultarEmpleado();
-			CRUD.consultarEmpleados();
+			//CRUD.consultarEmpleados();
 //			CRUD.guardarEmpleado();
 //			CRUD.consultarEmpleados();
+			CRUD.crearEmpleadoJPA();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println("Mensaje: " + e.getMessage());
