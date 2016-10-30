@@ -1,7 +1,7 @@
-package com.db.util;
+package com.util;
 
-import static com.db.util.Constantes.PATH;
-import static com.db.util.Constantes.UNIDAD;
+import static com.util.Constantes.PATH;
+import static com.util.Constantes.UNIDAD;
 
 import java.io.File;
 import java.io.FileInputStream;

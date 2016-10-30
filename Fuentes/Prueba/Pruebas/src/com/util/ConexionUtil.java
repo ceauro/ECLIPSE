@@ -1,10 +1,10 @@
-package com.db.util;
+package com.util;
 
-import static com.db.util.Constantes.DRIVER;
-import static com.db.util.Constantes.CONEXION;
-import static com.db.util.Constantes.USUARIO;
-import static com.db.util.Constantes.CLAVE;
-import static com.db.util.Constantes.DATA_SOURCE;
+import static com.util.Constantes.CLAVE;
+import static com.util.Constantes.CONEXION;
+import static com.util.Constantes.DATA_SOURCE;
+import static com.util.Constantes.DRIVER;
+import static com.util.Constantes.USUARIO;
 
 import com.db.dto.ConexionDto;
 import com.db.dto.EmpleadoDto;

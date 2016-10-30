@@ -1,23 +1,19 @@
-package com.db.util;
+package com.db.query;
 
 import com.db.enums.Logico;
-import com.db.enums.Tipo;
 
-public class Condicion {
+public class Condicion<T extends Enum<T>> {
 	
-	private Tipo tipo;
-	private String campo;
+	private T campo;
 	private Object valor;
 	private Logico operadroLogico;
 	
-	public Condicion(Tipo tipo, String campo, String valor){
-		this.tipo = tipo;
+	public Condicion(T campo, String valor){
 		this.campo = campo;
 		this.valor = valor;
 	}
 	
-	public Condicion(Tipo tipo, String campo, String valor, Logico operadroLogico){
-		this.tipo = tipo;
+	public Condicion(T campo, String valor, Logico operadroLogico){
 		this.campo = campo;
 		this.valor = valor;
 		this.operadroLogico = operadroLogico;
@@ -39,19 +35,13 @@ public class Condicion {
 		this.operadroLogico = operadroLogico;
 	}
 
-	public Tipo getTipo() {
-		return tipo;
-	}
 
-	public void setTipo(Tipo tipo) {
-		this.tipo = tipo;
-	}
-
-	public String getCampo() {
+	public T getCampo() {
 		return campo;
 	}
 
-	public void setCampo(String campo) {
+	public void setCampo(T campo) {
 		this.campo = campo;
 	}
+	
 }

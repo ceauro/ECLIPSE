@@ -1,10 +1,12 @@
 package com.db.dto;
 
-import com.db.util.Jsonizable;
 import com.db.vo.EmpleadoVo;
 import com.google.gson.Gson;
+import com.util.Jsonizable;
+import com.util.XmlUtil;
+import com.util.Xmlizable;
 
-public class EmpleadoDto implements Jsonizable{
+public class EmpleadoDto implements Jsonizable, Xmlizable{
 	
 	private EmpleadoVo empleado;
 	
@@ -32,6 +34,12 @@ public class EmpleadoDto implements Jsonizable{
 	public String toJson() {
 		Gson json = new Gson();
 		return json.toJson(empleado);
+	}
+
+	@Override
+	public String toXml() {
+		// TODO Auto-generated method stub
+		return XmlUtil.toXml(empleado, EmpleadoVo.class);
 	}
 
 }

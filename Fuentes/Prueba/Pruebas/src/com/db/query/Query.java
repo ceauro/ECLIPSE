@@ -1,44 +1,47 @@
-package com.db.util;
+package com.db.query;
 
-import static com.db.util.Constantes.SELECT;
-import static com.db.util.Constantes.SELECT_FROM;
-import static com.db.util.Constantes.WHERE;
+import static com.util.Constantes.FROM;
+import static com.util.Constantes.SELECT;
+import static com.util.Constantes.SELECT_FROM;
+import static com.util.Constantes.WHERE;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-public class Query {
+import com.util.TablaI;
+
+public class Query<T extends Enum<T> & TablaI<T>> {
 	
-	private String[] camposSelect;
+	private List<T> camposSelect;
 	private String tabla;
-	private List<Condicion> condiciones;
+	private List<Condicion<T>> condiciones;
 	
 	public Query(String tabla){
 		this.tabla = tabla;
 	}
 	
-	public Query(String[] camposSelect, String tabla){
+	public Query(List<T> camposSelect, String tabla){
 		this.camposSelect = camposSelect;
 		this.tabla = tabla;
 	}
 	
-	public Query(String tabla, List<Condicion> condiciones){
+	public Query(String tabla, List<Condicion<T>> condiciones){
 		this.tabla = tabla;
 		this.condiciones = condiciones;
 	}
 	
-	public Query(String[] camposSelect, String tabla, List<Condicion> condiciones){
+	public Query(List<T>  camposSelect, String tabla, List<Condicion<T>> condiciones){
 		this.camposSelect = camposSelect;
 		this.tabla = tabla;
 		this.condiciones = condiciones;
 	}
 	
-	public String[] getCamposSelect() {
+	public List<T>  getCamposSelect() {
 		return camposSelect;
 	}
-	public void setCamposSelect(String[] camposSelect) {
+	public void setCamposSelect(List<T> camposSelect) {
 		this.camposSelect = camposSelect;
 	}
 	public String getTabla() {
@@ -47,28 +50,42 @@ public class Query {
 	public void setTabla(String tabla) {
 		this.tabla = tabla;
 	}
-	public List<Condicion> getCondiciones() {
+	public List<Condicion<T>> getCondiciones() {
 		return condiciones;
 	}
-	public void setCondiciones(List<Condicion> condiciones) {
+	public void setCondiciones(List<Condicion<T>> condiciones) {
 		this.condiciones = condiciones;
 	}
 	
 	public String getQuery(){
-		List<Condicion> claves = null;
+		List<Condicion<T>> claves = null;
 		StringBuilder sql = new StringBuilder();
 		
 		if(getCamposSelect() == null){
 			sql.append(SELECT_FROM);
 		} else {
 			sql.append(SELECT);
-			
-			for(String columna : getCamposSelect()){
-				sql.append(columna);
+					
+			for(T columna : getCamposSelect()){
+				TablaI<T> col = (TablaI<T>) columna;
+				sql.append(col.getNombre());
 				sql.append(",");
 			}
 			
+			for(T id: getCamposSelect()){
+				TablaI<T> campoId = (TablaI<T>) id;
+				
+				if(sql.indexOf(campoId.getNombreId()+",") == -1){
+					sql.append(campoId.getNombreId());
+					sql.append(",");
+					getCamposSelect().add(campoId.getId());
+				}
+				
+				break;
+			}
+			
 			sql.replace(sql.length()-1, sql.length(), " ");
+			sql.append(FROM);
 		}
 		
 		sql.append(getTabla());
@@ -77,8 +94,9 @@ public class Query {
 			claves = getCondiciones();
 			sql.append(WHERE);
 			
-			for(Condicion clave: claves){;
-				sql.append(clave.getCampo());
+			for(Condicion<T> clave: claves){
+				
+				sql.append(((TablaI<T>)clave.getCampo()).getNombre());
 				sql.append(" = ? ");
 				
 				if(clave.getOperadroLogico() != null){
@@ -97,9 +115,12 @@ public class Query {
 	public void prepararQuery(PreparedStatement ps) throws SQLException{
 		if(getCondiciones() != null){
 			int cont = 1;
-			List<Condicion> claves = getCondiciones();
-			for(Condicion clave: claves){			
-				switch(clave.getTipo()){
+			List<Condicion<T>> claves = getCondiciones();
+			for(Condicion<T> clave: claves){
+				
+				TablaI<T> tipoCampo = (TablaI<T>) clave.getCampo();
+				
+				switch(tipoCampo.getTipo()){
 					case NUMBER:
 						ps.setInt(cont++, (int)clave.getValor());
 						break;

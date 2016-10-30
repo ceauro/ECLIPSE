@@ -1,4 +1,4 @@
-package com.db.util;
+package com.util;
 
 public class Constantes {
 

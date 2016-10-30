@@ -1,20 +1,19 @@
 package com.test;
 
-import static com.db.util.Constantes.TBL_EMPLEADO;
+import static com.util.Constantes.TBL_EMPLEADO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.db.dao.CrudDao;
+import com.db.dao.CrudDaoI;
 import com.db.dao.EmpleadoDao;
 import com.db.dto.EmpleadoDto;
-import com.db.enums.Logico;
-import com.db.enums.Tipo;
-import com.db.util.Condicion;
-import com.db.util.ConexionUtil;
-import com.db.util.Query;
+import com.db.enums.Empleado;
+import com.db.query.Condicion;
+import com.db.query.Query;
 import com.jpa.dao.CrudJpa;
 import com.jpa.dao.EmpleadoJpaDao;
+import com.util.ConexionUtil;
 
 import model.TblEmpleado;
 
@@ -22,7 +21,7 @@ public class CRUD {
 
 	public static void guardarEmpleado() throws Exception {
 		EmpleadoDto dto = ConexionUtil.getEmpleadoDto("98712737", "Javier", "Urrea", "3137620034");
-		CrudDao<EmpleadoDto> consultar = new EmpleadoDao(dto);
+		CrudDaoI<EmpleadoDto, Empleado> consultar = new EmpleadoDao(dto);
 		
 		if(consultar.insertar()){
 			System.out.println("Insertó registro");
@@ -32,22 +31,34 @@ public class CRUD {
 	}
 	
 	public static void consultarEmpleados() throws Exception {
-		CrudDao<EmpleadoDto> consultar = new EmpleadoDao();
+		long inicio = System.currentTimeMillis();
+		CrudDaoI<EmpleadoDto, Empleado> consultar = new EmpleadoDao();
 		
-		List<Condicion> campos = new ArrayList<Condicion>();
-		campos.add(new Condicion(Tipo.VARCHAR,"nombres", "Carlos", Logico.AND));
-		campos.add(new Condicion(Tipo.VARCHAR,"cedula","98712735"));
+		List<Condicion<Empleado>> campos = new ArrayList<Condicion<Empleado>>();
+		//campos.add(new Condicion<Empleado>(Empleado.NOMBRES, "Carlos", Logico.AND));
+		campos.add(new Condicion<Empleado>(Empleado.CEDULA,"98712735"));
 		
-		Query query = new Query(TBL_EMPLEADO, campos);
+		List<Empleado> camposSelect = new ArrayList<Empleado>();
+		camposSelect.add(Empleado.ID);
+		camposSelect.add(Empleado.NOMBRES);
+		camposSelect.add(Empleado.APELLIDOS);
+		camposSelect.add(Empleado.TELEFONO);
+		Query<Empleado> query = new Query<Empleado>(camposSelect, TBL_EMPLEADO, campos);
 		
-		List<EmpleadoDto> empleados = consultar.consultar(query);
+		List<EmpleadoDto> empleados = consultar.consultar(null);
+//		for(EmpleadoDto empleado: empleados)
+//			System.out.println("Resultado: " + empleado.toJson());
+		
 		for(EmpleadoDto empleado: empleados)
-			System.out.println("Resultado: " + empleado.toJson());
+			System.out.println("Resultado: " + empleado.toXml());
+		long fin = System.currentTimeMillis();
+		
+		System.out.println("Tiempo ejecutado: "+ (inicio-fin)/1000 + " segundos");
 	}
 	
 	public static void actualizarEmpleado() throws Exception {
 		EmpleadoDto dto = ConexionUtil.getEmpleadoDto(1, "98712737", "Carlos", "Perez", "3137620034");
-		CrudDao<EmpleadoDto> actualizar = new EmpleadoDao(dto);
+		CrudDaoI<EmpleadoDto, Empleado> actualizar = new EmpleadoDao(dto);
 		boolean update = actualizar.actualizar();
 		
 		if(update){
@@ -77,10 +88,10 @@ public class CRUD {
 		try {
 //			CRUD.actualizarEmpleado();
 			//CRUD.consultarEmpleado();
-			//CRUD.consultarEmpleados();
+			CRUD.consultarEmpleados();
 //			CRUD.guardarEmpleado();
 //			CRUD.consultarEmpleados();
-			CRUD.crearEmpleadoJPA();
+			//CRUD.crearEmpleadoJPA();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println("Mensaje: " + e.getMessage());

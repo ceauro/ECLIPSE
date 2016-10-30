@@ -1,29 +1,31 @@
 package com.db.dao;
 
-import static com.db.util.Constantes.DELETE;
-import static com.db.util.Constantes.DTO_NULL;
-import static com.db.util.Constantes.EMPLEADO_NO_ECONTRADO;
-import static com.db.util.Constantes.INSERT;
-import static com.db.util.Constantes.INSERT_EMPLEADO;
-import static com.db.util.Constantes.TBL_EMPLEADO;
-import static com.db.util.Constantes.UPDATE;
-import static com.db.util.Constantes.UPDATE_EMPLEADO;
-import static com.db.util.Constantes.VALUES_EMPLEADO;
-import static com.db.util.Constantes.WHERE_EMPLEADO;
+import static com.util.Constantes.DELETE;
+import static com.util.Constantes.DTO_NULL;
+import static com.util.Constantes.EMPLEADO_NO_ECONTRADO;
+import static com.util.Constantes.INSERT;
+import static com.util.Constantes.INSERT_EMPLEADO;
+import static com.util.Constantes.TBL_EMPLEADO;
+import static com.util.Constantes.UPDATE;
+import static com.util.Constantes.UPDATE_EMPLEADO;
+import static com.util.Constantes.VALUES_EMPLEADO;
+import static com.util.Constantes.WHERE_EMPLEADO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.db.ds.DataSource;
 import com.db.dto.EmpleadoDto;
-import com.db.util.ConexionUtil;
-import com.db.util.Query;
+import com.db.enums.Empleado;
+import com.db.query.Query;
 import com.db.vo.EmpleadoVo;
+import com.util.ConexionUtil;
 
-public class EmpleadoDao implements CrudDao<EmpleadoDto> {
+public class EmpleadoDao implements CrudDaoI<EmpleadoDto, Empleado> {
 	
 	private DataSource dataSource;
 	private EmpleadoDto dto;
@@ -181,12 +183,16 @@ public class EmpleadoDao implements CrudDao<EmpleadoDto> {
 	}
 
 	@Override
-	public List<EmpleadoDto>  consultar(Query query) throws Exception {
+	public List<EmpleadoDto>  consultar(Query<Empleado> query) throws Exception {
 		List<EmpleadoDto> empleados = new ArrayList<EmpleadoDto>();
 		
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		Connection conn = dataSource.getDBConnection();
+		
+		if(query == null){
+			query = new Query<Empleado>(TBL_EMPLEADO);
+		}
 		
 		try{
 			stm = conn.prepareStatement(query.getQuery());
@@ -194,23 +200,21 @@ public class EmpleadoDao implements CrudDao<EmpleadoDto> {
 			rs = stm.executeQuery();
 			
 			if(rs.next()){
-				EmpleadoVo vo = new EmpleadoVo();
-				vo.setId(rs.getInt(1));
-				vo.setCedula(rs.getString(2));
-				vo.setNombres(rs.getString(3));
-				vo.setApellidos(rs.getString(4));
-				vo.setTelefono(rs.getString(5));
-				empleados.add(new EmpleadoDto(vo));
 				
-				while(rs.next()){
-					vo = new EmpleadoVo();
-					vo.setId(rs.getInt(1));
-					vo.setCedula(rs.getString(2));
-					vo.setNombres(rs.getString(3));
-					vo.setApellidos(rs.getString(4));
-					vo.setTelefono(rs.getString(5));
-					empleados.add(new EmpleadoDto(vo));
+				if(query.getCamposSelect() == null) {
+					empleados.add(mapResultado(rs));
+					while(rs.next()){
+						empleados.add(mapResultado(rs));
+					}
+				} else {
+					List<Empleado> campos = query.getCamposSelect();
+					empleados.add(mapResultado(rs,campos));
+					while(rs.next()){
+						empleados.add(mapResultado(rs,campos));
+					}
 				}
+				
+				
 			} else {
 				throw new Exception(EMPLEADO_NO_ECONTRADO);
 			}
@@ -232,5 +236,45 @@ public class EmpleadoDao implements CrudDao<EmpleadoDto> {
 		}
 		
 		return empleados;
+	}
+	
+	private EmpleadoDto mapResultado(ResultSet rs) throws SQLException{
+		EmpleadoVo vo = new EmpleadoVo();
+		vo.setId(rs.getInt(1));
+		vo.setCedula(rs.getString(2));
+		vo.setNombres(rs.getString(3));
+		vo.setApellidos(rs.getString(4));
+		vo.setTelefono(rs.getString(5));
+		
+		return new EmpleadoDto(vo);
+	}
+	
+	private EmpleadoDto mapResultado(ResultSet rs, List<Empleado> camposSelect) throws SQLException{
+		EmpleadoVo vo = new EmpleadoVo();
+		
+		for(Empleado campo : camposSelect){
+			String nombreColumna = campo.getNombre();
+			if(nombreColumna.equalsIgnoreCase(Empleado.APELLIDOS.getNombre())){
+				vo.setApellidos(rs.getString(nombreColumna));
+			}
+			
+			if(nombreColumna.equalsIgnoreCase(Empleado.NOMBRES.getNombre())){
+				vo.setNombres(rs.getString(nombreColumna));
+			}
+			
+			if(nombreColumna.equalsIgnoreCase(Empleado.CEDULA.getNombre())){
+				vo.setCedula(rs.getString(nombreColumna));
+			}
+			
+			if(nombreColumna.equalsIgnoreCase(Empleado.TELEFONO.getNombre())){
+				vo.setTelefono(rs.getString(nombreColumna));
+			}
+			
+			if(nombreColumna.equalsIgnoreCase(Empleado.ID.getNombre())){
+				vo.setId(rs.getInt(nombreColumna));
+			}
+		}
+		
+		return new EmpleadoDto(vo);
 	}
 }
