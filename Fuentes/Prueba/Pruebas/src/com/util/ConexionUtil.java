@@ -12,6 +12,8 @@ import com.db.vo.ConexionVo;
 import com.db.vo.EmpleadoVo;
 import com.google.gson.Gson;
 
+import model.TblEmpleado;
+
 public class ConexionUtil {
 
 	public static ConexionDto getConexionDto() {
@@ -56,5 +58,20 @@ public class ConexionUtil {
 		Gson json = new Gson();
 		EmpleadoVo vo = json.fromJson(Json, EmpleadoVo.class);
 		return new EmpleadoDto(vo);
+	}
+
+	public static TblEmpleado mapearEmpleadoJpa(EmpleadoVo empleado) {
+		TblEmpleado emp = null;
+		
+		if(empleado != null){
+			emp = new TblEmpleado();
+			emp.setApellidos(empleado.getApellidos());
+			emp.setCedula(empleado.getCedula());
+			emp.setId(empleado.getId());
+			emp.setNombres(empleado.getNombres());
+			emp.setTelefono(empleado.getTelefono());
+		}
+		
+		return null;
 	}
 }
